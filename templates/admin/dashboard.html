@@ -1,0 +1,84 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Dashboard - Admin{% endblock %}
+{% block admin_title %}Dashboard{% endblock %}
+
+{% block admin_content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-content">
+            <div class="stat-value">{{ total_orders }}</div>
+            <div class="stat-label">Total Orders</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">⏳</div>
+        <div class="stat-content">
+            <div class="stat-value">{{ pending_orders }}</div>
+            <div class="stat-label">Pending Orders</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">✅</div>
+        <div class="stat-content">
+            <div class="stat-value">{{ paid_orders }}</div>
+            <div class="stat-label">Paid Orders</div>
+    </div>
+    
+    <div class="stat-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-content">
+            <div class="stat-value">${{ "%.2f"|format(orders|sum(attribute='final_price')|default(0)) }}</div>
+            <div class="stat-label">Total Revenue</div>
+    </div>
+
+<div class="recent-orders">
+    <div class="section-header">
+        <h2>Recent Orders</h2>
+        <a href="{{ url_for('admin.orders') }}" class="btn-link">View All →</a>
+    </div>
+    
+    <div class="orders-table">
+        <table>
+            <thead>
+                <tr>
+                    <th>Order #</th>
+                    <th>Customer</th>
+                    <th>Product</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders[:10] %}
+                <tr>
+                    <td>{{ order.order_number }}</td>
+                    <td>
+                        <div>{{ order.customer_name }}</div>
+                        <div class="text-muted">{{ order.customer_email }}</div>
+                    </td>
+                    <td>{{ order.product_name }}</td>
+                    <td>${{ "%.2f"|format(order.final_price) }}</td>
+                    <td>
+                        <span class="status-badge status-{{ order.status }}">{{ order.status }}</span>
+                    </td>
+                    <td>{{ order.created_at.strftime('%Y-%m-%d') if order.created_at else 'N/A' }}</td>
+                    <td>
+                        <a href="{{ url_for('admin.order_detail', order_id=order.id) }}" class="btn-action">View</a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="empty-message">No orders yet</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
+</parameter>
+</invoke>
+</minimax:tool_call>

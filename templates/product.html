@@ -1,0 +1,466 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.title }} - DropBy.HOLLOW{% endblock %}
+
+{% block extra_css %}
+<style>
+.product-detail {
+    padding: 48px 0;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+}
+
+@media (max-width: 768px) {
+    .product-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.product-image {
+    aspect-ratio: 1;
+    background: #141414;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-image .placeholder {
+    font-size: 6rem;
+    color: #2a2a2a;
+}
+
+.product-info h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #f5f5f5;
+    margin-bottom: 8px;
+}
+
+.product-category {
+    color: #d4af37;
+    font-size: 0.875rem;
+    margin-bottom: 16px;
+}
+
+.product-description {
+    color: #a3a3a3;
+    line-height: 1.6;
+    margin-bottom: 24px;
+}
+
+.product-base-price {
+    font-size: 1.5rem;
+    color: #f5f5f5;
+    margin-bottom: 24px;
+}
+
+.sources-section {
+    margin-top: 32px;
+}
+
+.sources-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.sources-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: #f5f5f5;
+}
+
+.scrape-btn {
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid #d4af37;
+    color: #d4af37;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.scrape-btn:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.scrape-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.sources-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+@media (max-width: 640px) {
+    .sources-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.source-card {
+    background: #141414;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.source-card:hover {
+    border-color: #d4af37;
+    transform: translateY(-2px);
+}
+
+.source-card.selected {
+    border-color: #d4af37;
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.source-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.source-name {
+    font-weight: 600;
+    color: #f5f5f5;
+}
+
+.source-stock {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.source-stock.in-stock {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+}
+
+.source-stock.out-of-stock {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.source-price {
+    font-size: 1.25rem;
+    color: #d4af37;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.source-price-original {
+    font-size: 0.875rem;
+    color: #a3a3a3;
+    text-decoration: line-through;
+    margin-right: 8px;
+}
+
+.source-final-price {
+    font-size: 1rem;
+    color: #22c55e;
+    font-weight: 600;
+}
+
+.source-url {
+    font-size: 0.75rem;
+    color: #a3a3a3;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.service-fee-note {
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid #d4af37;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 24px;
+}
+
+.service-fee-note p {
+    color: #d4af37;
+    font-size: 0.875rem;
+    margin: 0;
+}
+
+.checkout-section {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #2a2a2a;
+}
+
+.price-breakdown {
+    margin-bottom: 16px;
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    color: #a3a3a3;
+}
+
+.price-row.total {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #f5f5f5;
+    padding-top: 8px;
+    border-top: 1px solid #2a2a2a;
+    margin-top: 8px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    font-size: 1rem;
+}
+
+.btn-primary {
+    background: #d4af37;
+    color: #0a0a0a;
+    width: 100%;
+    text-align: center;
+}
+
+.btn-primary:hover {
+    background: #e5c14b;
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.no-sources {
+    background: #141414;
+    border-radius: 8px;
+    padding: 32px;
+    text-align: center;
+    color: #a3a3a3;
+}
+
+.no-sources h3 {
+    color: #f5f5f5;
+    margin-bottom: 8px;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d4af37;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="product-detail">
+    <div class="container">
+        <div class="product-grid">
+            <div class="product-image">
+                {% if product.image_url %}
+                <img src="{{ product.image_url }}" alt="{{ product.title }}">
+                {% else %}
+                <span class="placeholder">📦</span>
+                {% endif %}
+            </div>
+            
+            <div class="product-info">
+                <div class="product-category">{{ product.category.name }}</div>
+                <h1>{{ product.title }}</h1>
+                <p class="product-description">{{ product.description }}</p>
+                <div class="product-base-price">
+                    Base Price: ${{ "%.2f"|format(product.base_price) }}
+                </div>
+                
+                <div class="sources-section">
+                    <div class="sources-header">
+                        <h2>Price Comparison</h2>
+                        <button class="scrape-btn" id="scrapeBtn" onclick="scrapePrices()">
+                            <span id="scrapeText">Refresh Prices</span>
+                        </button>
+                    </div>
+                    
+                    <div id="sourcesContainer">
+                        {% if price_sources %}
+                        <div class="sources-grid">
+                            {% for source in price_sources %}
+                            <div class="source-card" onclick="selectSource('{{ source.source_url }}', {{ source.price }})" data-url="{{ source.source_url }}" data-price="{{ source.price }}">
+                                <div class="source-header">
+                                    <span class="source-name">{{ source.source_name }}</span>
+                                    <span class="source-stock {{ 'in-stock' if source.in_stock else 'out-of-stock' }}">
+                                        {{ 'In Stock' if source.in_stock else 'Out of Stock' }}
+                                    </span>
+                                </div>
+                                <div class="source-price">
+                                    <span class="source-price-original">${{ "%.2f"|format(source.price) }}</span>
+                                    <span class="source-final-price">${{ "%.2f"|format(source.final_price) }}</span>
+                                </div>
+                                <div class="source-url">{{ source.source_url }}</div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="no-sources">
+                            <h3>No price sources available</h3>
+                            <p>Click "Refresh Prices" to fetch current prices from retailers.</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="service-fee-note">
+                        <p>💰 ${{ service_fee }} service fee included in final price</p>
+                    </div>
+                    
+                    <div class="checkout-section">
+                        <div class="price-breakdown">
+                            <div class="price-row">
+                                <span>Source Price:</span>
+                                <span id="selectedPrice">${{ "%.2f"|format(product.base_price) }}</span>
+                            </div>
+                            <div class="price-row">
+                                <span>Service Fee:</span>
+                                <span>${{ "%.2f"|format(service_fee) }}</span>
+                            </div>
+                            <div class="price-row total">
+                                <span>Total:</span>
+                                <span id="finalPrice">${{ "%.2f"|format(product.get_final_price()) }}</span>
+                            </div>
+                        
+                        <form id="checkoutForm" method="GET" action="{{ url_for('main.checkout', product_id=product.id) }}">
+                            <input type="hidden" name="source_url" id="sourceUrlInput" value="">
+                            <input type="hidden" name="price" id="priceInput" value="{{ product.base_price }}">
+                            <button type="submit" class="btn btn-primary" id="checkoutBtn">
+                                Proceed to Checkout
+                            </button>
+                        </form>
+                    </div>
+            </div>
+    </div>
+
+<script>
+let selectedSourceUrl = '';
+let selectedPrice = {{ product.base_price }};
+const serviceFee = {{ service_fee }};
+
+function selectSource(url, price) {
+    // Remove previous selection
+    document.querySelectorAll('.source-card').forEach(card => card.classList.remove('selected'));
+    
+    // Add selection to clicked card
+    event.currentTarget.classList.add('selected');
+    
+    selectedSourceUrl = url;
+    selectedPrice = price;
+    
+    // Update hidden inputs
+    document.getElementById('sourceUrlInput').value = url;
+    document.getElementById('priceInput').value = price;
+    
+    // Update price display
+    const finalPrice = (price + serviceFee).toFixed(2);
+    document.getElementById('selectedPrice').textContent = '$' + price.toFixed(2);
+    document.getElementById('finalPrice').textContent = '$' + finalPrice;
+}
+
+async function scrapePrices() {
+    const btn = document.getElementById('scrapeBtn');
+    const text = document.getElementById('scrapeText');
+    const container = document.getElementById('sourcesContainer');
+    
+    btn.disabled = true;
+    text.innerHTML = '<span class="loading-spinner"></span>Scraping...';
+    
+    try {
+        const response = await fetch(`/api/products/{{ product.id }}/scrape`, {
+            method: 'POST'
+        });
+        
+        const data = await response.json();
+        
+        if (data.success && data.sources) {
+            // Rebuild sources grid
+            let html = '<div class="sources-grid">';
+            
+            data.sources.forEach(source => {
+                const finalPrice = (source.price + serviceFee).toFixed(2);
+                html += `
+                    <div class="source-card" onclick="selectSource('${source.source_url}', ${source.price})" data-url="${source.source_url}" data-price="${source.price}">
+                        <div class="source-header">
+                            <span class="source-name">${source.source_name}</span>
+                            <span class="source-stock ${source.in_stock ? 'in-stock' : 'out-of-stock'}">
+                                ${source.in_stock ? 'In Stock' : 'Out of Stock'}
+                            </span>
+                        </div>
+                        <div class="source-price">
+                            <span class="source-price-original">$${source.price.toFixed(2)}</span>
+                            <span class="source-final-price">$${finalPrice}</span>
+                        </div>
+                        <div class="source-url">${source.source_url}</div>
+                `;
+            });
+            
+            html += '</div>';
+            container.innerHTML = html;
+            
+            // Auto-select first available source
+            const firstSource = document.querySelector('.source-card');
+            if (firstSource) {
+                selectSource(firstSource.dataset.url, parseFloat(firstSource.dataset.price));
+            }
+        }
+    } catch (error) {
+        console.error('Error scraping prices:', error);
+        alert('Failed to scrape prices. Please try again.');
+    }
+    
+    btn.disabled = false;
+    text.textContent = 'Refresh Prices';
+}
+
+// Auto-select first source on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const firstSource = document.querySelector('.source-card');
+    if (firstSource) {
+        selectSource(firstSource.dataset.url, parseFloat(firstSource.dataset.price));
+    }
+});
+</script>
+{% endblock %}
+</parameter>
+</invoke>
+</minimax:tool_call>

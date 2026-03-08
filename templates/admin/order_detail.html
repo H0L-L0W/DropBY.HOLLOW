@@ -1,0 +1,122 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Order {{ order.order_number }} - Admin{% endblock %}
+{% block admin_title %}Order Details{% endblock %}
+
+{% block admin_content %}
+<div class="order-detail-grid">
+    <div class="order-card">
+        <h2>Order Information</h2>
+        <div class="detail-row">
+            <span class="detail-label">Order Number</span>
+            <span class="detail-value">{{ order.order_number }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Status</span>
+            <span class="status-badge status-{{ order.status }}">{{ order.status }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Payment Status</span>
+            <span class="payment-badge payment-{{ order.payment_status }}">{{ order.payment_status }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Created</span>
+            <span class="detail-value">{{ order.created_at.strftime('%Y-%m-%d %H:%M:%S') if order.created_at else 'N/A' }}</span>
+        </div>
+    
+    <div class="order-card">
+        <h2>Customer Information</h2>
+        <div class="detail-row">
+            <span class="detail-label">Name</span>
+            <span class="detail-value">{{ order.customer_name }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Email</span>
+            <span class="detail-value">{{ order.customer_email }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Phone</span>
+            <span class="detail-value">{{ order.customer_phone or 'N/A' }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Address</span>
+            <span class="detail-value">{{ order.shipping_address }}</span>
+        </div>
+    
+    <div class="order-card">
+        <h2>Product Information</h2>
+        <div class="product-info">
+            {% if order.product_image %}
+            <img src="{{ order.product_image }}" alt="{{ order.product_name }}" class="product-thumb">
+            {% else %}
+            <div class="product-thumb placeholder">📦</div>
+            {% endif %}
+            <div>
+                <strong>{{ order.product_name }}</strong>
+            </div>
+    </div>
+    
+    <div class="order-card critical-card">
+        <h2>🔗 Source Link (CRITICAL)</h2>
+        {% if order.source_url %}
+        <div class="source-url-box">
+            <a href="{{ order.source_url }}" target="_blank" class="source-link-btn">
+                🛒 Open {{ order.source_url|truncate(50) }}
+            </a>
+            <p class="source-url-text">{{ order.source_url }}</p>
+        </div>
+        {% else %}
+        <p class="no-source">No source URL available</p>
+        {% endif %}
+        
+        <div class="price-details">
+            <div class="detail-row">
+                <span class="detail-label">Source Price</span>
+                <span class="detail-value">${{ "%.2f"|format(order.selected_price) }}</span>
+            </div>
+            <div class="detail-row">
+                <span class="detail-label">Service Fee</span>
+                <span class="detail-value">${{ "%.2f"|format(order.service_fee) }}</span>
+            </div>
+            <div class="detail-row total">
+                <span class="detail-label">Total Paid</span>
+                <span class="detail-value">${{ "%.2f"|format(order.final_price) }}</span>
+            </div>
+    </div>
+
+<div class="order-actions">
+    <h2>Update Order Status</h2>
+    <form method="POST" action="{{ url_for('admin.update_order', order_id=order.id) }}" class="status-form">
+        <div class="form-row">
+            <div class="form-group">
+                <label>Order Status</label>
+                <select name="status">
+                    <option value="pending" {{ 'selected' if order.status == 'pending' }}>Pending</option>
+                    <option value="purchased" {{ 'selected' if order.status == 'purchased' }}>Purchased (from supplier)</option>
+                    <option value="shipped" {{ 'selected' if order.status == 'shipped' }}>Shipped</option>
+                    <option value="delivered" {{ 'selected' if order.status == 'delivered' }}>Delivered</option>
+                    <option value="cancelled" {{ 'selected' if order.status == 'cancelled' }}>Cancelled</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Payment Status</label>
+                <select name="payment_status">
+                    <option value="pending" {{ 'selected' if order.payment_status == 'pending' }}>Pending</option>
+                    <option value="paid" {{ 'selected' if order.payment_status == 'paid' }}>Paid</option>
+                    <option value="failed" {{ 'selected' if order.payment_status == 'failed' }}>Failed</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">Update Status</button>
+        </div>
+    </form>
+</div>
+
+<div class="back-link">
+    <a href="{{ url_for('admin.orders') }}">← Back to Orders</a>
+</div>
+{% endblock %}
+</parameter>
+</invoke>
+</minimax:tool_call>

@@ -1,0 +1,148 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Orders - Admin{% endblock %}
+{% block admin_title %}Order Management{% endblock %}
+
+{% block admin_content %}
+<div class="filters-bar">
+    <div class="filter-group">
+        <label>Status:</label>
+        <select onchange="filterOrders('status', this.value)">
+            <option value="">All</option>
+            <option value="pending">Pending</option>
+            <option value="purchased">Purchased</option>
+            <option value="shipped">Shipped</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+        </select>
+    </div>
+    
+    <div class="filter-group">
+        <label>Payment:</label>
+        <select onchange="filterOrders('payment', this.value)">
+            <option value="">All</option>
+            <option value="pending">Pending</option>
+            <option value="paid">Paid</option>
+            <option value="failed">Failed</option>
+        </select>
+    </div>
+
+<div class="orders-table-container">
+    <table class="orders-table">
+        <thead>
+            <tr>
+                <th>Order #</th>
+                <th>Customer</th>
+                <th>Product</th>
+                <th>Source Link</th>
+                <th>Total</th>
+                <th>Payment</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="ordersTableBody">
+            {% for order in orders %}
+            <tr>
+                <td>
+                    <strong>{{ order.order_number }}</strong>
+                </td>
+                <td>
+                    <div>{{ order.customer_name }}</div>
+                    <div class="text-muted">{{ order.customer_email }}</div>
+                    <div class="text-muted text-small">{{ order.customer_phone or '' }}</div>
+                </td>
+                <td>
+                    <div>{{ order.product_name }}</div>
+                    <div class="text-muted text-small">${{ "%.2f"|format(order.selected_price) }} + ${{ "%.2f"|format(order.service_fee) }} fee</div>
+                </td>
+                <td>
+                    {% if order.source_url %}
+                    <a href="{{ order.source_url }}" target="_blank" class="source-link" title="{{ order.source_url }}">
+                        🔗 Open Supplier
+                    </a>
+                    {% else %}
+                    <span class="text-muted">No source</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <strong>${{ "%.2f"|format(order.final_price) }}</strong>
+                </td>
+                <td>
+                    <span class="payment-badge payment-{{ order.payment_status }}">{{ order.payment_status }}</span>
+                </td>
+                <td>
+                    <select class="status-select" onchange="updateStatus({{ order.id }}, this.value)">
+                        <option value="pending" {{ 'selected' if order.status == 'pending' }}>Pending</option>
+                        <option value="purchased" {{ 'selected' if order.status == 'purchased' }}>Purchased</option>
+                        <option value="shipped" {{ 'selected' if order.status == 'shipped' }}>Shipped</option>
+                        <option value="delivered" {{ 'selected' if order.status == 'delivered' }}>Delivered</option>
+                        <option value="cancelled" {{ 'selected' if order.status == 'cancelled' }}>Cancelled</option>
+                    </select>
+                </td>
+                <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') if order.created_at else 'N/A' }}</td>
+                <td>
+                    <div class="action-buttons">
+                        <a href="{{ url_for('admin.order_detail', order_id=order.id) }}" class="btn-action">View</a>
+                        {% if order.source_url %}
+                        <a href="{{ order.source_url }}" target="_blank" class="btn-action btn-buy">Buy</a>
+                        {% endif %}
+                    </div>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="9" class="empty-message">No orders found</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+async function updateStatus(orderId, status) {
+    try {
+        const response = await fetch(`/api/orders/${orderId}/status`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            showNotification('Order status updated', 'success');
+        }
+    } catch (error) {
+        console.error('Error updating status:', error);
+        showNotification('Failed to update status', 'error');
+    }
+}
+
+function filterOrders(type, value) {
+    const url = new URL(window.location.href);
+    if (value) {
+        if (type === 'status') {
+            url.searchParams.set('status', value);
+        } else {
+            url.searchParams.set('payment_status', value);
+        }
+    } else {
+        url.searchParams.delete('status');
+        url.searchParams.delete('payment_status');
+    }
+    window.location.href = url.toString();
+}
+
+function showNotification(message, type) {
+    // Simple notification
+    console.log(`[${type.toUpperCase()}] ${message}`);
+}
+</script>
+{% endblock %}
+</parameter>
+</invoke>
+</minimax:tool_call>

@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+
+{% block title %}DropBy.HOLLOW - Premium Curated Products{% endblock %}
+
+{% block extra_css %}
+<style>
+.hero {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+    padding: 80px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at 50% 50%, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    color: #f5f5f5;
+    margin-bottom: 16px;
+}
+
+.hero h1 span {
+    color: #d4af37;
+}
+
+.hero p {
+    font-size: 1.25rem;
+    color: #a3a3a3;
+    max-width: 600px;
+    margin: 0 auto 32px;
+}
+
+.hero-badge {
+    display: inline-block;
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid #d4af37;
+    color: #d4af37;
+    padding: 8px 20px;
+    border-radius: 24px;
+    font-size: 0.875rem;
+    margin-bottom: 24px;
+}
+
+.categories-section {
+    padding: 64px 0;
+}
+
+.section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    color: #f5f5f5;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.category-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 1024px) {
+    .category-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .category-grid {
+        grid-template-columns: 1fr;
+    }
+    .hero h1 {
+        font-size: 2rem;
+    }
+}
+
+.category-card {
+    position: relative;
+    aspect-ratio: 4/3;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.category-card:hover {
+    transform: scale(1.02);
+}
+
+.category-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.category-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 24px;
+}
+
+.category-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: #f5f5f5;
+    margin-bottom: 4px;
+}
+
+.category-card p {
+    font-size: 0.875rem;
+    color: #a3a3a3;
+}
+
+.featured-section {
+    padding: 64px 0;
+    background: #0f0f0f;
+}
+
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 1024px) {
+    .products-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .products-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.product-card {
+    background: #141414;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+}
+
+.product-card-image {
+    aspect-ratio: 1;
+    background: #1f1f1f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.product-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-card-image .placeholder {
+    font-size: 3rem;
+    color: #2a2a2a;
+}
+
+.product-card-content {
+    padding: 16px;
+}
+
+.product-card h3 {
+    font-size: 1rem;
+    color: #f5f5f5;
+    margin-bottom: 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.product-card-price {
+    font-size: 1.25rem;
+    color: #d4af37;
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.product-card-price .fee {
+    font-size: 0.75rem;
+    color: #a3a3a3;
+    font-weight: 400;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-primary {
+    background: #d4af37;
+    color: #0a0a0a;
+}
+
+.btn-primary:hover {
+    background: #e5c14b;
+    box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid #d4af37;
+    color: #d4af37;
+}
+
+.btn-outline:hover {
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+    text-align: center;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-badge">Premium Curated Shopping</div>
+            <h1>Discover <span>Extraordinary</span> Products</h1>
+            <p>We aggregate prices from 30+ retailers to find you the best deals. Add $20 for our premium sourcing service.</p>
+            <a href="#categories" class="btn btn-primary">Explore Categories</a>
+        </div>
+</section>
+
+<section id="categories" class="categories-section">
+    <div class="container">
+        <h2 class="section-title">Shop by Category</h2>
+        <div class="category-grid">
+            {% for category in categories %}
+            <a href="{{ url_for('main.category', slug=category.slug) }}" class="category-card">
+                {% if category.image_url %}
+                <img src="{{ category.image_url }}" alt="{{ category.name }}">
+                {% endif %}
+                <div class="category-card-overlay">
+                    <h3>{{ category.name }}</h3>
+                    <p>{{ category.description }}</p>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+</section>
+
+<section class="featured-section">
+    <div class="container">
+        <h2 class="section-title">Featured Products</h2>
+        <div class="products-grid">
+            {% for product in featured_products %}
+            <div class="product-card">
+                <div class="product-card-image">
+                    {% if product.image_url %}
+                    <img src="{{ product.image_url }}" alt="{{ product.title }}">
+                    {% else %}
+                    <span class="placeholder">📦</span>
+                    {% endif %}
+                </div>
+                <div class="product-card-content">
+                    <h3>{{ product.title }}</h3>
+                    <div class="product-card-price">
+                        ${{ "%.2f"|format(product.get_final_price()) }}
+                        <span class="fee">+ $20 service</span>
+                    </div>
+                    <a href="{{ url_for('main.product', product_id=product.id) }}" class="btn btn-outline btn-block">View Details</a>
+                </div>
+            {% endfor %}
+        </div>
+</section>
+{% endblock %}
+</parameter>
+</invoke>
+</minimax:tool_call>
