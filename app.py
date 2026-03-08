@@ -100,5 +100,7 @@ def initialize_sample_data():
 
 
 if __name__ == '__main__':
-    app = create_app('development')
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # Check if running on Render (production)
+    config_name = 'production' if os.environ.get('RENDER') else 'development'
+    app = create_app(config_name)
+    app.run(debug=(config_name == 'development'), host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
