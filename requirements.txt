@@ -3,12 +3,9 @@ Flask==3.0.0
 Flask-SQLAlchemy==3.1.1
 Flask-CORS==4.0.0
 
-# Web Scraping
+# Web Scraping (optional - for future use)
 beautifulsoup4==4.12.2
 requests==2.31.0
-lxml==5.3.0
-selenium==4.15.2
-playwright==1.40.0
 
 # Database
 SQLAlchemy==2.0.23
