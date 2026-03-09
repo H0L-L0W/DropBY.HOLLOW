@@ -6,11 +6,13 @@ from flask import Blueprint, render_template, request, redirect, url_for, jsonif
 from app import db
 from models import Order, Product, Category
 from datetime import datetime
+from routes.auth import admin_required
 
 admin_bp = Blueprint('admin', __name__)
 
 
 @admin_bp.route('/')
+@admin_required
 def dashboard():
     """Admin dashboard."""
     orders = Order.query.order_by(Order.created_at.desc()).all()
@@ -26,6 +28,7 @@ def dashboard():
 
 
 @admin_bp.route('/orders')
+@admin_required
 def orders():
     """Order management page."""
     status_filter = request.args.get('status', '')
@@ -44,6 +47,7 @@ def orders():
 
 
 @admin_bp.route('/orders/<int:order_id>')
+@admin_required
 def order_detail(order_id):
     """Order detail page."""
     order = Order.query.get_or_404(order_id)
@@ -51,6 +55,7 @@ def order_detail(order_id):
 
 
 @admin_bp.route('/orders/<int:order_id>/update', methods=['POST'])
+@admin_required
 def update_order(order_id):
     """Update order status."""
     order = Order.query.get_or_404(order_id)
@@ -79,6 +84,7 @@ def update_order(order_id):
 
 
 @admin_bp.route('/orders/<int:order_id>/delete', methods=['POST'])
+@admin_required
 def delete_order(order_id):
     """Delete an order."""
     order = Order.query.get_or_404(order_id)
@@ -92,6 +98,7 @@ def delete_order(order_id):
 
 
 @admin_bp.route('/products')
+@admin_required
 def products():
     """Product management page."""
     category_id = request.args.get('category_id', type=int)

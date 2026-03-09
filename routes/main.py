@@ -6,6 +6,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from app import db
 from models import Category, Product, Order, PriceSource
 from config import Config
+from routes.auth import login_required
 
 
 main_bp = Blueprint("main", __name__)
@@ -48,8 +49,9 @@ def product(product_id):
 
 
 @main_bp.route("/checkout/<int:product_id>", methods=["GET", "POST"])
+@login_required
 def checkout(product_id):
-    """Checkout page."""
+    """Checkout page - requires login."""
     product = Product.query.get_or_404(product_id)
     
     source_url = request.args.get("source_url", "")

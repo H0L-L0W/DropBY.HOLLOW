@@ -6,6 +6,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from app import db
 from models import User
 from functools import wraps
+import os
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -122,4 +123,48 @@ def profile():
     """User profile page."""
     user = User.query.get(session['user_id'])
     return render_template('profile.html', user=user)
+
+
+@auth_bp.route('/admin-signup', methods=['GET', 'POST'])
+def admin_signup():
+    """Admin registration - requires secret key."""
+    # Get secret key from config or environment
+    admin_secret = os.environ.get('ADMIN_SECRET', 'dropby-admin-2024')
+    
+    if request.method == 'POST':
+        email = request.form.get('email')
+        name = request.form.get('name')
+        password = request.form.get('password')
+        secret_key = request.form.get('secret_key')
+        
+        # Validation
+        if not email or not name or not password or not secret_key:
+            flash('All fields are required.', 'error')
+            return render_template('admin_signup.html')
+        
+        if secret_key != admin_secret:
+            flash('Invalid admin secret key.', 'error')
+            return render_template('admin_signup.html')
+        
+        if len(password) < 6:
+            flash('Password must be at least 6 characters.', 'error')
+            return render_template('admin_signup.html')
+        
+        # Check if user exists
+        existing_user = User.query.filter_by(email=email).first()
+        if existing_user:
+            flash('Email already registered.', 'error')
+            return render_template('admin_signup.html')
+        
+        # Create new admin user
+        user = User(email=email, name=name, is_admin=True)
+        user.set_password(password)
+        
+        db.session.add(user)
+        db.session.commit()
+        
+        flash('Admin account created successfully! Please log in.', 'success')
+        return redirect(url_for('auth.login'))
+    
+    return render_template('admin_signup.html')
 

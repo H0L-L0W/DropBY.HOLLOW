@@ -285,6 +285,37 @@
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
+
+.login-prompt {
+    text-align: center;
+    padding: 24px;
+    background: rgba(212, 175, 55, 0.1);
+    border: 1px solid #d4af37;
+    border-radius: 8px;
+}
+
+.login-prompt p {
+    color: #f5f5f5;
+    margin-bottom: 16px;
+}
+
+.login-prompt .btn-primary {
+    margin-bottom: 12px;
+}
+
+.signup-link {
+    color: #a3a3a3 !important;
+    font-size: 0.875rem;
+}
+
+.signup-link a {
+    color: #d4af37;
+    text-decoration: none;
+}
+
+.signup-link a:hover {
+    text-decoration: underline;
+}
 </style>
 {% endblock %}
 
@@ -361,6 +392,7 @@
                                 <span id="finalPrice">${{ "%.2f"|format(product.get_final_price()) }}</span>
                             </div>
                         
+                        {% if session.get('user_id') %}
                         <form id="checkoutForm" method="GET" action="{{ url_for('main.checkout', product_id=product.id) }}">
                             <input type="hidden" name="source_url" id="sourceUrlInput" value="">
                             <input type="hidden" name="price" id="priceInput" value="{{ product.base_price }}">
@@ -368,6 +400,13 @@
                                 Proceed to Checkout
                             </button>
                         </form>
+                        {% else %}
+                        <div class="login-prompt">
+                            <p>Please sign in to purchase this item</p>
+                            <a href="{{ url_for('auth.login', next=request.url) }}" class="btn btn-primary">Sign In to Purchase</a>
+                            <p class="signup-link">Don't have an account? <a href="{{ url_for('auth.signup', next=request.url) }}">Create one</a></p>
+                        </div>
+                        {% endif %}
                     </div>
             </div>
     </div>
