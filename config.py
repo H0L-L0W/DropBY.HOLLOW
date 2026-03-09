@@ -21,7 +21,10 @@ class DevelopmentConfig(Config):
 
 class ProductionConfig(Config):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 'sqlite:///instance/database.db')
+    # Use absolute path for SQLite database on Render
+    basedir = os.path.abspath(os.path.dirname(__file__))
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL', 
+        f'sqlite:///{os.path.join(basedir, "instance", "database.db")}')
 
 class TestingConfig(Config):
     TESTING = True
