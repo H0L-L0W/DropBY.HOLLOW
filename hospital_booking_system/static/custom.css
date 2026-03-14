@@ -1,0 +1,26 @@
+/* Custom styles for Hospital Booking System */
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.075);
+}
+
+.navbar-brand {
+    font-weight: bold;
+}
+
+.table th {
+    background-color: #e9ecef;
+}
+
+.badge {
+    font-size: 0.8em;
+}
+
+/* Dashboard charts */
+#revenueChart {
+    max-height: 300px;
+}
+

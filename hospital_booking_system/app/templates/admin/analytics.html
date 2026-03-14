@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Analytics Dashboard</h2>
+<p>Week Revenue: ${{ "%.2f"|format(week_revenue) }}</p>
+<canvas id="revenueChart" width="400" height="200"></canvas>
+<script>
+var ctx = document.getElementById('revenueChart').getContext('2d');
+var chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['Day1', 'Day2'], // Stub
+        datasets: [{ label: 'Revenue', data: [65, 59] }]
+    }
+});
+</script>
+{% endblock %}

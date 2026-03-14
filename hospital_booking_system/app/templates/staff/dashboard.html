@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Staff Dashboard - Hospital Calendar</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Date/Time</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for appt in appointments %}
+        <tr>
+            <td>{{ appt.id }}</td>
+            <td>{{ appt.patient.first_name }} {{ appt.patient.last_name }}</td>
+            <td>{{ appt.doctor.user.first_name }} {{ appt.doctor.user.last_name }}</td>
+            <td>{{ appt.date_time }}</td>
+            <td><span class="badge bg-{{ 'success' if appt.status == 'confirmed' else 'warning' if appt.status == 'pending' else 'danger' }}">{{ appt.status.title() }}</span></td>
+            <td>
+                {% if appt.status == 'pending' %}
+                    <a href="{{ url_for('staff.approve', appt_id=appt.id) }}" class="btn btn-sm btn-success">Approve</a>
+                {% endif %}
+                <a href="{{ url_for('staff.staff_cancel', appt_id=appt.id) }}" class="btn btn-sm btn-danger">Cancel</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

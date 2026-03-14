@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Doctor Dashboard - {{ doctor.user.first_name }} {{ doctor.user.last_name }}</h2>
+<p>Specialty: {{ doctor.specialty }} | Fee: ${{ doctor.consultation_fee }}</p>
+
+<h3>Pending Appointments</h3>
+{% if upcoming %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Patient</th>
+            <th>Date/Time</th>
+            <th>Reason</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for appt in upcoming %}
+        <tr>
+            <td>{{ appt.patient.first_name }} {{ appt.patient.last_name }}</td>
+            <td>{{ appt.date_time }}</td>
+            <td>{{ appt.reason[:50] }}...</td>
+            <td><a href="{{ url_for('doctor.confirm_appt', appt_id=appt.id) }}" class="btn btn-success btn-sm">Confirm</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>No pending appointments.</p>
+{% endif %}
+
+<h3>Confirmed Appointments</h3>
+<!-- Table for confirmed -->
+{% endblock %}

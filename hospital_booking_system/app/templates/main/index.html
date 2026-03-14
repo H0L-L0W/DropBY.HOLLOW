@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Hospital Booking System{% endblock %}
+
+{% block content %}
+<div class="jumbotron text-center bg-primary text-white p-5 rounded">
+    <h1 class="display-4">Welcome to Hospital Booking System</h1>
+    <p class="lead">Book appointments with top doctors, manage schedules, and analytics for hospitals.</p>
+    <a class="btn btn-light btn-lg" href="{{ url_for('auth.register') }}">Get Started</a>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <h3>Patients</h3>
+        <p>Book, view, cancel appointments easily.</p>
+    </div>
+    <div class="col-md-4">
+        <h3>Doctors</h3>
+        <p>Manage your schedule and availability.</p>
+    </div>
+    <div class="col-md-4">
+        <h3>Hospitals</h3>
+        <p>Revenue tracking and admin dashboard.</p>
+    </div>
+</div>
+{% endblock %}
